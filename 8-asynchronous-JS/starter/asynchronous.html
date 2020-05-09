@@ -8,8 +8,63 @@
 </head>
 <body>
     <h1>Asynchronous JavaScript</h1>
-    <script>
+    <div class="display">
+        <p>Weather report:</p>
+        <div class="weather"></div>
+    </div>
+    <!-- <script>
+        //using fetch with a promise and then
+        const url = 'https://www.metaweather.com/api/';
+        function getWeather(id){
+            fetch(`https://cors-anywhere.herokuapp.com/${url}location/${id}/`)
+            .then(result => {
+                console.log(result);
+                // document.querySelector('div.weather').textContent = result.status;
+                return result.json();
+            })
+            .then(data => {
+                console.log(data);
+                const today = data.consolidated_weather[0];
+                const log = `Temperatures in ${data.title} stay between ${today.min_temp} and ${today.max_temp}.`;
+                document.querySelector('div.weather').textContent = log;
+            })
+            .catch(error => {
+                console.log(error);
+                document.querySelector('div.weather').textContent = error;
+            })
+        };
+        getWeather(44418);
         
+    </script> -->
+    <script>
+        // using fetch with async/await
+        const url = 'https://www.metaweather.com/api/';
+        async function getWeather(id){
+            try {
+                const result = await fetch(`https://cors-anywhere.herokuapp.com/${url}location/${id}/`);
+                const data = await result.json();
+                const tomorrow = data.consolidated_weather[1];
+                // const log = `Temperatures in ${data.title} stay between ${tomorrow.min_temp} and ${tomorrow.max_temp}.`;
+                // document.querySelector('div.weather').textContent = log;
+                console.log(`Temperatures in ${data.title} tomorrow stay between ${tomorrow.min_temp} and ${tomorrow.max_temp}.`);
+                return data; //if we want to return this data from the function then we need to use the "then" to display the value
+            } catch (error){
+                console.log(error);
+            }
+        };
+
+        getWeather(44418);
+        getWeather(2487956);
+
+        //if we want to save the response from a async function, we need to use a then method to resolve the value from the promise,
+        // otherwise the execution proceeds before the promise's value is resolved
+        let dataLondon; //this should be let as this function is used inside the "then" to store the resolved value of the promise
+        getWeather(44418).then(data => {
+            dataLondon = data;
+            console.log(dataLondon);
+        });
+
+
     </script>
 </body>
 </html>
